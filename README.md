@@ -1,3 +1,5 @@
+## [skip to docs](docs/README.md)
+
 # xpt2046-circuitpython
 A CircuitPython (or Adafruit-Blinka) library which reads values from an XPT2046 chip, commonly found on cheap microcontroller TFT displays.
 

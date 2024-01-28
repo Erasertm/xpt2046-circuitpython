@@ -24,7 +24,7 @@ class Touch:
         self, 
         spi: busio.SPI, 
         cs: digitalio.DigitalInOut,
-        interrupt: Optional[digitalio.DigitalInOut],
+        interrupt: Optional[digitalio.DigitalInOut] = None,
         interrupt_pressed_value: Optional[bool] = False,
         width: int = 240, 
         height: int = 320,
@@ -34,7 +34,8 @@ class Touch:
         y_max: int = 2100,
         force_baudrate: Optional[int] = None
     ):
-        """Initialize touch screen controller.
+        """
+        Initializes the touch screen controller.
 
         Args:
             spi (busio.SPI):  SPI interface for OLED
@@ -94,13 +95,13 @@ class Touch:
         Reads coordinates from the display.
         
         Args:
-            reading_count (Optional[int]): Defines how many good readings to obtain from the XPT2046.
+            reading_count (Optional: int): Defines how many good readings to obtain from the XPT2046.
                 If this is defined, readings will be obtained every 0.05s until the specified number
                 of samples are obtained and the average will be returned.
-            timeout (Optional[float]): Only used if poll_for is defined. Defines the maximum time that 
+            timeout (Optional: float): Only used if poll_for is defined. Defines the maximum time that 
                 the screen should be polled for to get good samples before None is returned.
         Returns:
-            Optional[Tuple[x: int, y: int]]: X/Y coordinates, if a reading was able to be obtained.
+            Optional: Tuple[x: int, y: int]: X/Y coordinates, if a reading was able to be obtained.
         Raises:
             ReadFailedException: Unable to get a reading or timeout was reached
         """
