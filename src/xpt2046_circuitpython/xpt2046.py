@@ -118,9 +118,9 @@ class Touch:
                     dev = sum([(c[0] - meanx)**2 +
                             (c[1] - meany)**2 for c in buff]) / reading_count
                     if dev <= 50:  # Deviation should be under margin of 50
-                        return self.normalize(meanx, meany)
+                        return self._normalize(meanx, meany)
                 # get a new value
-                sample = self.raw_touch()  # get a touch
+                sample = self._raw_touch()  # get a touch
                 if sample is None:
                     nsamples = 0    # Invalidate buff
                 else:
@@ -162,8 +162,8 @@ class Touch:
         Raises:
             ReadFailedException: Unable to get a valid reading
         """
-        x = self.send_command(self.GET_X)
-        y = self.send_command(self.GET_Y)
+        x = self._send_command(self.GET_X)
+        y = self._send_command(self.GET_Y)
         print(x, ",", y)
         if self.x_min <= x <= self.x_max and self.y_min <= y <= self.y_max:
             return (x, y)
