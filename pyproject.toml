@@ -19,9 +19,6 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3 :: Only",
 ]
-dependencies = [
-  "Adafruit-Blinka"
-]
 
 [project.urls]
 "Homepage" = "https://github.com/humeman/xpt2046-circuitpython"
