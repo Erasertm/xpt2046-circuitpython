@@ -6,7 +6,7 @@ A CircuitPython (or Adafruit-Blinka) library which reads values from an XPT2046 
 ## installation
 This project is available on PyPi:
 ```sh
-pip3 install xpt2046_circuitpython
+pip3 install xpt2046-circuitpython
 ```
 
 Or, to install it manually:

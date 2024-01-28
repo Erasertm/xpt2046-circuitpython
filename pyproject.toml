@@ -1,6 +1,6 @@
 [project]
 name = "xpt2046_circuitpython"
-version = "1.0.0"
+version = "1.0.2"
 description = "A simple XPT2046 chip reader designed for use with CircuitPython."
 readme = "README.md"
 requires-python = ">=3.7"
