@@ -7,4 +7,5 @@ import xpt2046_circuitpython
 ```
 
 ## classes
-### [xpt2046_circuitpython.Touch](xpt2046_circuitpython.md#touch)
+### [xpt2046_circuitpython.Touch](xpt2046_circuitpython.md#Touch)
+### [xpt2046_circuitpython.ReadFailedException](xpt2046_circuitpython.md#ReadFailedException)

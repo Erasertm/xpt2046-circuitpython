@@ -1,4 +1,4 @@
-## [skip to docs](docs/README.md)
+## [skip to docs](https://github.com/humeman/xpt2046-circuitpython/blob/main/docs/README.md)
 
 # xpt2046-circuitpython
 A CircuitPython (or Adafruit-Blinka) library which reads values from an XPT2046 chip, commonly found on cheap microcontroller TFT displays.
@@ -60,5 +60,5 @@ if touch.is_pressed():
 ```
 
 Some more examples:
-* [read.py](samples/read.py): A simple program which continuously prints coordinates when the screen is pressed
-* [adafruit-ili.py](samples/adafruit-ili.py): A simple drawing program for an ILI9341 display controlled by the Adafruit display library
+* [read.py](https://github.com/humeman/xpt2046-circuitpython/blob/main/samples/read.py): A simple program which continuously prints coordinates when the screen is pressed
+* [adafruit-ili.py](https://github.com/humeman/xpt2046-circuitpython/blob/main/samples/adafruit-ili.py): A simple drawing program for an ILI9341 display controlled by the Adafruit display library
