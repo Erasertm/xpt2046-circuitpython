@@ -1,49 +1,63 @@
-# XPT2046-Python
-Python library for XPT2046 Touchscreen.
+# xpt2046-circuitpython
+A CircuitPython (or Adafruit-Blinka) library which reads values from an XPT2046 chip, commonly found on cheap microcontroller TFT displays.
 
-This library is the same as [rdagger](https://github.com/rdagger/micropython-ili9341/blob/master/xpt2046.py)'s, but adapted to work with pure Python on Raspberry Pi.
+## installation
+This project is available on PyPi:
+```sh
+pip3 install xpt2046_circuitpython
+```
 
-## SPI and GPIOs
-SPI must be from [busio]()'s Adafruit CircuitPython library.
-GPIOs must be from [gpiozero](https://gpiozero.readthedocs.io/en/stable/index.html) library.
+Or, to install it manually:
+```sh
+git clone https://github.com/humeman/xpt2046-circuitpython
+cd xpt2046-circuitpython
+pip3 install .
+```
 
-## Usage
-You must initialize the SPI. In this example we will use the auxiliary SPI of the Raspberry Pi (NOTE: you have to enable it in the `/boot/config.txt` configuration file, see [here](https://raspberrypi.stackexchange.com/a/56503)).
 
-Wiring:
+## usage
+Be sure to enable SPI in `sudo raspi-config` before proceeding.
 
-| Raspberri Pi  | <--> | XPT2046 |
-| :------------ |:---------------:| -----:|
-| SCLK_1 (GPIO21) | <--> | CLK |
-| CE_1 (GPIO17) | <--> | CS |
-| MOSI_1 (GPIO20) | <--> | DIN |
-| MISO_1 (GPIO19) | <--> | DO |
-| GPIO26 | <--> | IRQ |
+### sample wiring
 
-Code, same as in [touch-test.py](https://github.com/Luca8991/XPT2046-Python/blob/main/touch-test.py) file:
+| TFT   | Board     | GPIO   | Pin # |
+| ----- | --------- | ------ | ----- |
+| T_CLK | SPI0 SCLK | GPIO11 | 23    |
+| T_CS  |           | GPIO6  | 31    |
+| T_DIN | SPI0 MOSI | GPIO10 | 19    |
+| T_DO  | SPI0 MISO | GPIO9  | 21    |
+| T_IRQ |           | GPIO22 | 15    |
 
-    from xpt2046 import Touch
-    from gpiozero import Button, DigitalOutputDevice
-    import board
-    import busio
-    from time import sleep
-	
-	# touch callback
-    def touchscreen_press(x, y):
-        print(x,y)
+### examples
+The most basic read example is:
+```py
+import xpt2046_circuitpython
+import time
+import busio
+import digitalio
+from board import SCK, MOSI, MISO, D6, D22
 
-    cs = DigitalOutputDevice(17)
-    clk = board.SCLK_1		# same as writing 21
-    mosi = board.MOSI_1	# same as writing 20
-    miso = board.MISO_1	# same as writing 19
-    irq = Button(26)
+# Pin config
+T_CS_PIN = D6
+T_IRQ_PIN = D22
 
-    spi = busio.SPI(clk, mosi, miso)	# auxiliary SPI
+# Set up SPI bus using hardware SPI
+spi = busio.SPI(clock=SCK, MOSI=MOSI, MISO=MISO)
+# Create touch controller
+touch = xpt2046.Touch(
+    spi, 
+    cs = digitalio.DigitalInOut(T_CS_PIN),
+    interrupt = digitalio.DigitalInOut(T_IRQ_PIN)
+)
 
-    xpt = Touch(spi, cs=cs, int_pin=irq, int_handler=touchscreen_press)
+# Check if we have an interrupt signal
+if touch.is_pressed():
+    # Get the coordinates for this touch
+    print(touch.get_coordinates())
+```
 
-    while True:
-        #print(xpt.get_touch()) # to get the (x, y) coords when you desire
-        sleep(.01)
+Some more examples:
+* [read.py](samples/read.py): A simple program which continuously prints coordinates when the screen is pressed
+* [adafruit-ili.py](samples/adafruit-ili.py): A simple drawing program for an ILI9341 display controlled by the Adafruit display library
 
 Tested on Raspberry Pi Zero W, used [this](https://www.amazon.it/gp/product/B087C3KC8F/) LCD + Touchscreen module
