@@ -9,7 +9,6 @@ Authors:
 from time import sleep
 import digitalio
 import busio
-from typing import Optional, Tuple
 
 from .exceptions import ReadFailedException
 
@@ -22,17 +21,17 @@ class Touch:
 
     def __init__(
         self, 
-        spi: busio.SPI, 
-        cs: digitalio.DigitalInOut,
-        interrupt: Optional[digitalio.DigitalInOut] = None,
-        interrupt_pressed_value: Optional[bool] = False,
-        width: int = 240, 
-        height: int = 320,
-        x_min: int = 100,
-        x_max: int = 1900,
-        y_min: int = 100, 
-        y_max: int = 2100,
-        force_baudrate: Optional[int] = None
+        spi,
+        cs,
+        interrupt=None,
+        interrupt_pressed_value=False,
+        width=240,
+        height=320,
+        x_min=100,
+        x_max=1900,
+        y_min=100,
+        y_max=2100,
+        force_baudrate=None
     ):
         """
         Initializes the touch screen controller.
@@ -88,9 +87,9 @@ class Touch:
 
     def get_coordinates(
         self,
-        reading_count: Optional[float] = None,
-        timeout: Optional[float] = 1
-    ) -> Optional[Tuple[int, int]]:
+        reading_count=None,
+        timeout=1
+    ):
         """
         Reads coordinates from the display.
         
@@ -136,7 +135,7 @@ class Touch:
 
     def is_pressed(
         self
-    ) -> bool:
+    ):
         """
         Checks if the display is pressed.
         An interrupt pin must be specified during instantiation for this to work.
@@ -153,7 +152,7 @@ class Touch:
 
     def _raw_touch(
         self
-    ) -> Tuple[int, int]:
+    ):
         """
         Read raw X,Y touch values.
 
@@ -172,9 +171,9 @@ class Touch:
 
     def _normalize(
         self, 
-        x: int, 
-        y: int
-    ) -> Tuple[int, int]:
+        x,
+        y
+    ):
         """
         Normalize XY values to match LCD screen.
         
@@ -190,8 +189,8 @@ class Touch:
 
     def _send_command(
         self, 
-        command: int
-    ) -> int:
+        command
+    ):
         """
         Writes a command to the XT2046.
 
@@ -211,9 +210,13 @@ class Touch:
         self.tx_buf[0] = command
         self.cs.value = False
         try:
+            if not self.spi.try_lock():
+                raise ReadFailedException("Failed to lock SPI bus. Is it in use?")
             self.spi.write_readinto(self.tx_buf, self.rx_buf)
         except Exception as e:
             raise ReadFailedException("SPI transfer failed.") from e
-        self.cs.value = True
+        finally:
+            self.cs.value = True
+            self.spi.unlock()
 
-        return (self.rx_buf[1] << 4) | (self.rx_buf[2] >> 4)    
+        return (self.rx_buf[1] << 4) | (self.rx_buf[2] >> 4)
