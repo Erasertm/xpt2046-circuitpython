@@ -28,10 +28,10 @@ class Touch:
         width=240,
         height=320,
         x_min=100,
-        x_max=1900,
-        y_min=100,
-        y_max=2100,
-        force_baudrate=None
+        x_max=1925,
+        y_min=175,
+        y_max=1975,
+        force_baudrate=2000000
     ):
         """
         Initializes the touch screen controller.
@@ -63,8 +63,9 @@ class Touch:
 
         # Interrupt pin
         self.interrupt = interrupt
-        self.interrupt.direction = digitalio.Direction.INPUT
-        self.interrupt_pressed_value = interrupt_pressed_value
+        if self.interrupt is not None:
+            self.interrupt.direction = digitalio.Direction.INPUT
+            self.interrupt_pressed_value = interrupt_pressed_value
 
         # Transmit data
         self.rx_buf = bytearray(3)
@@ -163,11 +164,11 @@ class Touch:
         """
         x = self._send_command(self.GET_X)
         y = self._send_command(self.GET_Y)
-        print(x, ",", y)
+        # print("raw:", x, ",", y)
         if self.x_min <= x <= self.x_max and self.y_min <= y <= self.y_max:
             return (x, y)
         else:
-            raise ReadFailedException(f"Out-of-bounds reading returned from LCD: x={x}, y={y}")
+            return (None, None)
 
     def _normalize(
         self, 
@@ -183,8 +184,10 @@ class Touch:
         Returns:
             Tuple[x: int, y: int]: Normalized XY values 
         """
+        if x is None or y is None:
+            return (x, y)
         x = int(self.x_multiplier * x + self.x_add)
-        y = int(self.y_multiplier * y + self.y_add)
+        y = self.height - int(self.y_multiplier * y + self.y_add)
         return x, y
 
     def _send_command(
